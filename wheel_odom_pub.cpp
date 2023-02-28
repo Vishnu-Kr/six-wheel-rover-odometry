@@ -274,9 +274,9 @@ void update_odom() {
  
   // Calculate the average distance
 //   double cycleDistance = (distanceRight + distanceLeft) / 2;
-     double cycleDistance = (distanceRight_Front + distanceRight_Middle + distanceRight_Rear + distanceLeft_Front + distanceLeft_Middle + distanceLeft_Rear) / 6;
+     double cycleDistance = (-distanceRight_Front - distanceRight_Middle - distanceRight_Rear + distanceLeft_Front + distanceLeft_Middle + distanceLeft_Rear) / 6;
       double leftDistance = (distanceLeft_Front + distanceLeft_Middle + distanceLeft_Rear)/3 ;
-      double rightDistance = (distanceRight_Front + distanceRight_Middle + distanceRight_Rear)/3;
+      double rightDistance = -(distanceRight_Front + distanceRight_Middle + distanceRight_Rear)/3;
 
   // Calculate the number of radians the robot has turned since the last cycle
   // double cycleAngle = asin((distanceRight_Middle-distanceLeft_Middle)/WHEEL_BASE);
