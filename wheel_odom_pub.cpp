@@ -1,18 +1,13 @@
-// *
-//  * Automatic Addison
-//  * Date: May 20, 2021
-//  * ROS Version: ROS 1 - Melodic
-//  * Website: https://automaticaddison.com
-//  * Publishes odometry information for use with robot_pose_ekf package.
+
 //  *   This odometry information is based on wheel encoder tick counts.
 //  * Subscribe: ROS node that subscribes to the following topics:
-//  *  right_ticks : Tick counts from the right motor encoder (std_msgs/Int32)
-//  * 
-//  *  left_ticks : Tick counts from the left motor encoder  (std_msgs/Int32)
-//  * 
-//  *  initial_2d : The initial position and orientation of the robot.
-//  *               (geometry_msgs/PoseStamped)
-//  *
+//  *  left_front_ticks (std_msgs/Int32)
+//  *  left_middle_ticks
+//  *  left_rear_ticks
+//  *  right_front_ticks
+//  *  right_middle_ticks
+//  *  right_rear_ticks
+
 //  * Publish: This node will publish to the following topics:
 //  *  odom_data_euler : Position and velocity estimate. The orientation.z 
 //  *                    variable is an Euler angle representing the yaw angle.
@@ -20,9 +15,7 @@
 //  *  odom_data_quat : Position and velocity estimate. The orientation is 
 //  *                   in quaternion format.
 //  *                   (nav_msgs/Odometry)
-//  * Modified from Practical Robotics in C++ book (ISBN-10 : 9389423465)
-//  *   by Lloyd Brombach
-//  */
+
  
 // Include various libraries
 #include "ros/ros.h"
@@ -274,9 +267,12 @@ void update_odom() {
  
   // Calculate the average distance
 //   double cycleDistance = (distanceRight + distanceLeft) / 2;
-     double cycleDistance = (-distanceRight_Front - distanceRight_Middle - distanceRight_Rear + distanceLeft_Front + distanceLeft_Middle + distanceLeft_Rear) / 6;
+     double cycleDistance = (distanceRight_Front +distanceRight_Middle + distanceRight_Rear + distanceLeft_Front + distanceLeft_Middle + distanceLeft_Rear) / 6;
       double leftDistance = (distanceLeft_Front + distanceLeft_Middle + distanceLeft_Rear)/3 ;
-      double rightDistance = -(distanceRight_Front + distanceRight_Middle + distanceRight_Rear)/3;
+      double rightDistance = (distanceRight_Front + distanceRight_Middle + distanceRight_Rear)/3;
+     ROS_INFO("right_middle: %f",rightDistance);
+
+    ROS_INFO("left_middle: %f",leftDistance);
 
   // Calculate the number of radians the robot has turned since the last cycle
   // double cycleAngle = asin((distanceRight_Middle-distanceLeft_Middle)/WHEEL_BASE);
@@ -370,7 +366,7 @@ int main(int argc, char **argv) {
   // Publisher of full odom message where orientation is quaternion
   odom_data_pub_quat = node.advertise<nav_msgs::Odometry>("odom_data_quat", 100);
  
-  ros::Rate loop_rate(30); 
+  ros::Rate loop_rate(3); 
      
   while(ros::ok()) {
      
